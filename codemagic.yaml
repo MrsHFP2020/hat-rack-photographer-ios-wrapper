@@ -14,7 +14,7 @@ workflows:
         XCODE_SCHEME: App
         APP_STORE_APP_ID: "6785075230"
     integrations:
-      app_store_connect: HatRackPhotographers
+      app_store_connect: HatRackPhotographersASC
 
     scripts:
       - name: Install dependencies
