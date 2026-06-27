@@ -13,11 +13,8 @@ workflows:
         XCODE_WORKSPACE: ios/App/App.xcworkspace
         XCODE_SCHEME: App
         APP_STORE_APP_ID: "6785075230"
-      groups:
-        - app_store_connect
-
     integrations:
-      app_store_connect: hatrack_app_store_connect
+      app_store_connect: HatRackPhotographers
 
     scripts:
       - name: Install dependencies
