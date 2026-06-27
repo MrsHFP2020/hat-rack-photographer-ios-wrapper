@@ -1,0 +1,19 @@
+{
+  "name": "hat-rack-photographer-ios-wrapper",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Codemagic/TestFlight wrapper for Hat Rack Photographer.",
+  "scripts": {
+    "build": "node scripts/build-static.js",
+    "cap:add:ios": "npx cap add ios",
+    "cap:sync:ios": "npx cap sync ios"
+  },
+  "dependencies": {
+    "@capacitor/core": "^6.2.0",
+    "@capacitor/ios": "^6.2.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.2.0",
+    "typescript": "^5.8.3"
+  }
+}
