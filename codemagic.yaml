@@ -1,0 +1,67 @@
+workflows:
+  ios-testflight:
+    name: Hat Rack Photographer - TestFlight
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+
+    environment:
+      node: 20
+      xcode: latest
+      cocoapods: default
+      vars:
+        BUNDLE_ID: com.hatfella.hatrack.photographer
+        XCODE_WORKSPACE: ios/App/App.xcworkspace
+        XCODE_SCHEME: App
+        APP_STORE_APP_ID: "6785075230"
+      groups:
+        - app_store_connect
+
+    triggering:
+      events:
+        - manual
+
+    integrations:
+      app_store_connect: hatrack_app_store_connect
+
+    scripts:
+      - name: Install dependencies
+        script: |
+          npm install
+
+      - name: Build wrapper assets
+        script: |
+          npm run build
+          npx cap add ios
+          npx cap copy ios
+
+      - name: Install iOS dependencies
+        script: |
+          cd ios/App
+          pod install
+
+      - name: Set up code signing
+        script: |
+          keychain initialize
+          app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --type IOS_APP_STORE \
+            --create
+          keychain add-certificates
+          xcode-project use-profiles
+
+      - name: Build iOS archive
+        script: |
+          xcode-project build-ipa \
+            --workspace "$XCODE_WORKSPACE" \
+            --scheme "$XCODE_SCHEME"
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.app
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
+
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        expire_build_submitted_for_review: false
