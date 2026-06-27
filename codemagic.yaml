@@ -16,6 +16,10 @@ workflows:
         XCODE_WORKSPACE: ios/App/App.xcworkspace
         XCODE_SCHEME: App
         APP_STORE_APP_ID: "6785075230"
+        APP_STORE_CONNECT_KEY_ID: HWW5XXTXL3
+        APP_STORE_CONNECT_ISSUER_ID: 4d09d50f-06de-4132-b766-64e14f277569
+      groups:
+        - app_store_connect_cli
     integrations:
       app_store_connect: HatRackPhotographersASC
 
@@ -47,14 +51,19 @@ workflows:
             --workspace "$XCODE_WORKSPACE" \
             --scheme "$XCODE_SCHEME"
 
+      - name: Upload IPA to TestFlight
+        script: |
+          mkdir -p "$HOME/.appstoreconnect/private_keys"
+          echo "$APP_STORE_CONNECT_PRIVATE_KEY_BASE64" | base64 --decode > "$HOME/.appstoreconnect/private_keys/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8"
+          xcrun altool \
+            --upload-app \
+            --type ios \
+            --file build/ios/ipa/App.ipa \
+            --apiKey "$APP_STORE_CONNECT_KEY_ID" \
+            --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID"
+
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
       - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.app
       - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
-
-    publishing:
-      app_store_connect:
-        auth: integration
-        submit_to_testflight: true
-        expire_build_submitted_for_review: false
