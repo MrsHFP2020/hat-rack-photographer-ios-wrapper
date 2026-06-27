@@ -1,0 +1,7 @@
+node_modules/
+tmp-assets/
+*.xcuserstate
+DerivedData/
+build/
+dist/
+.DS_Store
