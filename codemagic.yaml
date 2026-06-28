@@ -43,11 +43,13 @@ workflows:
           /usr/libexec/PlistBuddy -c "Set :NSLocationAlwaysAndWhenInUseUsageDescription Hat Rack uses background location only during assigned shoot windows so operations can confirm arrival and send accurate ETA updates." "$PLIST"
           /usr/libexec/PlistBuddy -c "Add :NSUserNotificationUsageDescription string Hat Rack sends job and ETA updates for assigned shoots." "$PLIST" || true
           /usr/libexec/PlistBuddy -c "Set :NSUserNotificationUsageDescription Hat Rack sends job and ETA updates for assigned shoots." "$PLIST"
+          /usr/libexec/PlistBuddy -c "Add :UIBackgroundModes array" "$PLIST" || true
+          /usr/libexec/PlistBuddy -c "Add :UIBackgroundModes:0 string location" "$PLIST" || true
 
       - name: Set TestFlight build number
         script: |
           cd ios/App
-          agvtool new-version -all 2
+          agvtool new-version -all 3
 
       - name: Install iOS dependencies
         script: |
